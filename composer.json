@@ -4,9 +4,9 @@
     "type": "project",
     "license": "MIT",
     "autoload": {
-        "psr-4": {
-            "Hexlet\\Code\\": "src/"
-        }
+        "files": [
+            "src/Parsers.php"
+        ]
     },
     "authors": [
         {
