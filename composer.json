@@ -1,0 +1,23 @@
+{
+    "name": "hexlet/code",
+    "description": "the second project on hexlet",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "gabrvp",
+            "email": "gabrusevich.valeriy1997@gmail.com"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0"
+    },
+    "bin": [
+        "bin/gendiff"
+    ]
+}
