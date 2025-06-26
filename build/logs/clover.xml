@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1750933577">
-  <project timestamp="1750933577" name="Clover Coverage">
+<coverage generated="1750935559">
+  <project timestamp="1750935559" name="Clover Coverage">
     <file name="/Users/gabrvp/php-project-48/src/Differ.php">
       <line num="9" type="stmt" count="1"/>
       <line num="10" type="stmt" count="1"/>
