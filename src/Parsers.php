@@ -15,6 +15,5 @@ function parse(string $pathToFile)
 {
     $fileContent = getFileContent($pathToFile, true);
     $parsingFileContent = json_decode($fileContent, true);
-    
     return $parsingFileContent;
 }
