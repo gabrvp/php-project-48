@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-use function Differ\Parsers\printer;
+use function Differ\Differ\genDiff;
 
 $autoloadPath1 = __DIR__ . '/../../../autoload.php';
 $autoloadPath2 = __DIR__ . '/../vendor/autoload.php';
@@ -30,6 +30,7 @@ $args = Docopt::handle($doc, array('version'=>'gendiff v.1.0'));
 $pathToFile1 = $args['<firstFile>'];
 $pathToFile2 = $args['<secondFile>'];
 
-printer($pathToFile1, $pathToFile2);
+$result = genDiff($pathToFile1, $pathToFile2);
+print_r($result);
 
 
