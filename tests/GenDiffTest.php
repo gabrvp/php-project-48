@@ -8,21 +8,29 @@ use function Differ\Differ\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    public function testGenDiff()
-    {
-        $pathToFile1 = 'tests/fixtures/file1.json';
-        $pathToFile2 = 'tests/fixtures/file2.json';
-        $actual = genDiff($pathToFile1, $pathToFile2);
-        $expected = <<<EOT
+    private const RESULT = <<<EOT
 {
    - follow:false
-   host:'hexlet.io'
+     host:'hexlet.io'
    - proxy:'123.234.53.22'
    - timeout:50
    + timeout:20
    + verbose:true
 }
 EOT;
-        $this->assertEquals($expected, $actual);
+    public function testJsonDiff()
+    {
+        $pathToFile1 = 'tests/fixtures/file1.json';
+        $pathToFile2 = 'tests/fixtures/file2.json';
+        $actual = genDiff($pathToFile1, $pathToFile2);
+        $this->assertSame(self::RESULT, $actual);
+    }
+
+    public function testYamlDiff()
+    {
+        $pathToFile1 = 'tests/fixtures/file1.yml';
+        $pathToFile2 = 'tests/fixtures/file2.yaml';
+        $actual = genDiff($pathToFile1, $pathToFile2);
+        $this->assertSame(self::RESULT, $actual);
     }
 }

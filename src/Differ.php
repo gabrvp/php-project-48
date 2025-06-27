@@ -15,16 +15,11 @@ function genDiff(string $pathToFile1, string $pathToFile2)
 
     $result = ['{'];
 
-    function formatValue($value): string
-    {
-        return var_export($value, true);
-    }
-
     foreach ($allKeys as $key) {
         $value1 = $parsingFileContent1[$key] ?? null;
         $value2 = $parsingFileContent2[$key] ?? null;
         if ($value1 === $value2) {
-            $result[] = "   $key:" . formatValue($value1);
+            $result[] = "     $key:" . formatValue($value1);
         } else {
             if ($value1 !== null && $value2 === null) {
                 $result[] = "   - $key:" . formatValue($value1);
@@ -40,4 +35,9 @@ function genDiff(string $pathToFile1, string $pathToFile2)
     }
     $result[] = '}';
     return implode("\n", $result);
+}
+
+function formatValue($value): string
+{
+    return var_export($value, true);
 }
