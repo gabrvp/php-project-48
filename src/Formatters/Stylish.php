@@ -22,8 +22,7 @@ function makeStringsFromDiff(array $diff, int $level = 0): array
             'same' => formatSame($key, $value1, $spaces, $nextLevel),
             'added' => formatAdded($key, $value1, $spaces, $nextLevel),
             'removed' => formatRemoved($key, $value1, $spaces, $nextLevel),
-            'updated' => formatUpdated($key, $value1, $value2, $spaces, $nextLevel),
-            default => throw new \Exception("Unknown status: {$status}")
+            'updated' => formatUpdated($node, $spaces, $nextLevel)
         };
     };
 
@@ -55,8 +54,9 @@ function formatRemoved(mixed $key, mixed $value, string $spaces, int $nextLevel)
     return "{$spaces}  - {$key}: {$stringifiedValue}";
 }
 
-function formatUpdated(mixed $key, mixed $value1, mixed $value2, string $spaces, int $nextLevel): string
+function formatUpdated(array $node, string $spaces, int $nextLevel): string
 {
+    extract($node);
     $stringifiedValue1 = stringifyValue($value1, $nextLevel);
     $stringifiedValue2 = stringifyValue($value2, $nextLevel);
     return "{$spaces}  - {$key}: {$stringifiedValue1}\n{$spaces}  + {$key}: {$stringifiedValue2}";
@@ -67,7 +67,7 @@ function getSpaces(int $level): string
     return str_repeat('    ', $level);
 }
 
-function stringifyValue(mixed $value, int $level): string
+function stringifyValue(mixed $value, int $level): mixed
 {
     if (is_null($value)) {
         return 'null';
@@ -80,12 +80,13 @@ function stringifyValue(mixed $value, int $level): string
         $spaces = getSpaces($level);
         return "{{$result}\n{$spaces}}";
     }
-    return (string) $value;
+    return "{$value}";
 }
 
 function convertArrayToString(array $value, int $level): string
 {
     $keys = array_keys($value);
+    $result = [];
     $nextLevel = $level + 1;
 
     $callback = function ($key) use ($value, $nextLevel) {
