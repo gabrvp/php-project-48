@@ -4,7 +4,7 @@ namespace Differ\Parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
-function getFileContent(string $pathToFile)
+function getFileContent(string $pathToFile): string
 {
     $contentOfFile = @file_get_contents($pathToFile);
     if ($contentOfFile !== false) {
@@ -13,7 +13,7 @@ function getFileContent(string $pathToFile)
     throw new \Exception("File not found", 1);
 }
 
-function parse(string $pathToFile)
+function parse(string $pathToFile): array
 {
     $contentOfFile = getFileContent($pathToFile);
     $extensionOfFile = pathinfo($pathToFile, PATHINFO_EXTENSION);
