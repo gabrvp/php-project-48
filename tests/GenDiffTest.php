@@ -8,29 +8,23 @@ use function Differ\Differ\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    private const RESULT = <<<EOT
-{
-   - follow:false
-     host:'hexlet.io'
-   - proxy:'123.234.53.22'
-   - timeout:50
-   + timeout:20
-   + verbose:true
-}
-EOT;
-    public function testJsonDiff()
+    public function testGenDiff()
     {
-        $pathToFile1 = 'tests/fixtures/file1.json';
-        $pathToFile2 = 'tests/fixtures/file2.json';
-        $actual = genDiff($pathToFile1, $pathToFile2);
-        $this->assertSame(self::RESULT, $actual);
+        $fixture1 = $this->getPathToFixture('file1.json');
+        $fixture2 = $this->getPathToFixture('file2.json');
+        $actual = genDiff($fixture1, $fixture2, 'stylish');
+        $expected = file_get_contents($this->getPathToFixture('expectedStylish'));
+        $this->assertEquals($expected, $actual);
+
+        $fixture1 = $this->getPathToFixture('file1.yml');
+        $fixture2 = $this->getPathToFixture('file2.yaml');
+        $actual = genDiff($fixture1, $fixture2, 'stylish');
+        $expected = file_get_contents($this->getPathToFixture('expectedStylish'));
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testYamlDiff()
+    private function getPathToFixture($fixtureName)
     {
-        $pathToFile1 = 'tests/fixtures/file1.yml';
-        $pathToFile2 = 'tests/fixtures/file2.yaml';
-        $actual = genDiff($pathToFile1, $pathToFile2);
-        $this->assertSame(self::RESULT, $actual);
+        return __DIR__ . "/fixtures/" . $fixtureName;
     }
 }

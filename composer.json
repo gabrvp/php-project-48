@@ -6,7 +6,9 @@
     "autoload": {
         "files": [
             "src/Parsers.php",
-            "src/Differ.php"
+            "src/Differ.php",
+            "src/Formatters.php",
+            "src/Formatters/Stylish.php"
         ]
     },
     "authors": [
@@ -17,7 +19,8 @@
     ],
     "require": {
         "docopt/docopt": "^1.0",
-        "symfony/yaml": "^7.3"
+        "symfony/yaml": "^7.3",
+        "lstrojny/functional-php": "^1.17"
     },
     "bin": [
         "bin/gendiff"
