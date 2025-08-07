@@ -11,6 +11,7 @@ function makeFormat(array $diff, string $formatName): string
     return match ($formatName) {
         'stylish' => stylishFormat($diff),
         'plain' => plainFormat($diff),
+        'json' => jsonFormat($diff),
         default => throw new \Exception("Unknown format: '{$formatName}'")
     };
 }
