@@ -11,6 +11,6 @@ function makeFormat(array $diff, string $formatName): string
     return match ($formatName) {
         'stylish' => stylishFormat($diff),
         'plain' => plainFormat($diff),
-        default => exit("Unknown format '{$formatName}'!\n")
+        default => throw new \Exception("Unknown format: '{$formatName}'")
     };
 }
