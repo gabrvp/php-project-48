@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Differ\Formatters\Stylish;
 
 function stylishFormat(array $diff): string
 {
     $formattedDiff = makeStringsFromDiff($diff);
-    $result = implode("\n", $formattedDiff);
-
-    return "{\n{$result}\n}";
+    return "{\n" . implode("\n", $formattedDiff) . "\n}";
 }
 
 function makeStringsFromDiff(array $diff, int $level = 0): array
@@ -15,18 +15,20 @@ function makeStringsFromDiff(array $diff, int $level = 0): array
     $spaces = getSpaces($level);
     $nextLevel = $level + 1;
 
-    $formatNode = function ($node) use ($spaces, $nextLevel) {
-        ['status' => $status, 'key' => $key, 'value1' => $value1, 'value2' => $value2] = $node;
-        return match ($status) {
-            'nested' => formatNested($key, $value1, $spaces, $nextLevel),
-            'same' => formatSame($key, $value1, $spaces, $nextLevel),
-            'added' => formatAdded($key, $value1, $spaces, $nextLevel),
-            'removed' => formatRemoved($key, $value1, $spaces, $nextLevel),
-            'updated' => formatUpdated($node, $spaces, $nextLevel)
-        };
-    };
-
-    return array_map($formatNode, $diff);
+    return array_map(
+        function ($node) use ($spaces, $nextLevel) {
+            ['status' => $status, 'key' => $key, 'value1' => $value1, 'value2' => $value2] = $node;
+            return match ($status) {
+                'nested' => formatNested($key, $value1, $spaces, $nextLevel),
+                'same' => formatSame($key, $value1, $spaces, $nextLevel),
+                'added' => formatAdded($key, $value1, $spaces, $nextLevel),
+                'removed' => formatRemoved($key, $value1, $spaces, $nextLevel),
+                'updated' => formatUpdated($key, $value1, $value2 ?? null, $spaces, $nextLevel),
+                default => throw new \InvalidArgumentException("Unknown status: {$status}")
+            };
+        },
+        $diff
+    );
 }
 
 function formatNested(mixed $key, mixed $value, string $spaces, int $nextLevel): string
@@ -54,9 +56,8 @@ function formatRemoved(mixed $key, mixed $value, string $spaces, int $nextLevel)
     return "{$spaces}  - {$key}: {$stringifiedValue}";
 }
 
-function formatUpdated(array $node, string $spaces, int $nextLevel): string
+function formatUpdated(mixed $key, mixed $value1, mixed $value2, string $spaces, int $nextLevel): string
 {
-    extract($node);
     $stringifiedValue1 = stringifyValue($value1, $nextLevel);
     $stringifiedValue2 = stringifyValue($value2, $nextLevel);
     return "{$spaces}  - {$key}: {$stringifiedValue1}\n{$spaces}  + {$key}: {$stringifiedValue2}";
@@ -67,7 +68,7 @@ function getSpaces(int $level): string
     return str_repeat('    ', $level);
 }
 
-function stringifyValue(mixed $value, int $level): mixed
+function stringifyValue(mixed $value, int $level): string
 {
     if (is_null($value)) {
         return 'null';
@@ -80,19 +81,17 @@ function stringifyValue(mixed $value, int $level): mixed
         $spaces = getSpaces($level);
         return "{{$result}\n{$spaces}}";
     }
-    return "{$value}";
+    return (string)$value;
 }
 
 function convertArrayToString(array $value, int $level): string
 {
     $keys = array_keys($value);
-    $result = [];
     $nextLevel = $level + 1;
 
     $callback = function ($key) use ($value, $nextLevel) {
         $newValue = stringifyValue($value[$key], $nextLevel);
         $spaces = getSpaces($nextLevel);
-
         return "\n{$spaces}{$key}: {$newValue}";
     };
 
