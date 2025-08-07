@@ -6,27 +6,28 @@ use Symfony\Component\Yaml\Yaml;
 
 function getFileContent(string $pathToFile)
 {
-    $fileContent = file_get_contents($pathToFile);
-    if ($fileContent !== false) {
-        return $fileContent;
+    $contentOfFile = @file_get_contents($pathToFile);
+    if ($contentOfFile !== false) {
+        return $contentOfFile;
     }
-    throw new \Exception('File not found', 901);
+    throw new \Exception("File not found", 1);
 }
 
 function parse(string $pathToFile)
 {
-    $fileContent = getFileContent($pathToFile, true);
-    $fileExtension = pathinfo($pathToFile, PATHINFO_EXTENSION);
-    switch ($fileExtension) {
+    $contentOfFile = getFileContent($pathToFile);
+    $extensionOfFile = pathinfo($pathToFile, PATHINFO_EXTENSION);
+    switch ($extensionOfFile) {
         case 'json':
-            $parsingFileContent = json_decode($fileContent, true);
+            $parsedContentOfFile = json_decode($contentOfFile, true);
             break;
         case 'yml':
         case 'yaml':
-            $parsingFileContent = Yaml::parse($fileContent);
+            $parsedContentOfFile = Yaml::parse($contentOfFile);
             break;
         default:
-            throw new \Exception('The specified file type is not supported!');
+            throw new \Exception("Unsupported format of incoming file!", 1);
     }
-    return $parsingFileContent;
+
+    return $parsedContentOfFile;
 }
