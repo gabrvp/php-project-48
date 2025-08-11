@@ -10,7 +10,7 @@ function getFileContent(string $pathToFile): string
     if ($contentOfFile !== false) {
         return $contentOfFile;
     }
-    throw new \Exception("File not found", 1);
+    throw new \Exception("File not found");
 }
 
 function parse(string $pathToFile): array
@@ -26,7 +26,7 @@ function parse(string $pathToFile): array
             $parsedContentOfFile = Yaml::parse($contentOfFile);
             break;
         default:
-            throw new \Exception("Unsupported format of incoming file!", 1);
+            throw new \Exception("Unsupported format of incoming file!");
     }
 
     return $parsedContentOfFile;
