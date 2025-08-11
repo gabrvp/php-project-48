@@ -6,7 +6,7 @@ use Symfony\Component\Yaml\Yaml;
 
 function getFileContent(string $pathToFile): string
 {
-    $contentOfFile = @file_get_contents($pathToFile);
+    $contentOfFile = file_get_contents($pathToFile);
     if ($contentOfFile !== false) {
         return $contentOfFile;
     }
