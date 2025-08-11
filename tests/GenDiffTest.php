@@ -3,52 +3,73 @@
 namespace Differ\tests\GenDiffTest;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function Differ\Differ\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    public function testGenDiff()
+    #[DataProvider('diffDataProvider')]
+    public function testGenDiff(string $file1, string $file2, string $format, string $expectedFile): void
     {
-        $fixture1 = $this->getPathToFixture('file1.json');
-        $fixture2 = $this->getPathToFixture('file2.json');
-        $actual = genDiff($fixture1, $fixture2, 'stylish');
-        $expected = file_get_contents($this->getPathToFixture('expectedStylish'));
-        $this->assertEquals($expected, $actual);
+        $fixture1 = $this->getFixturePath($file1);
+        $fixture2 = $this->getFixturePath($file2);
+        $expectedPath = $this->getFixturePath($expectedFile);
 
-        $fixture1 = $this->getPathToFixture('file1.yml');
-        $fixture2 = $this->getPathToFixture('file2.yaml');
-        $actual = genDiff($fixture1, $fixture2, 'stylish');
-        $expected = file_get_contents($this->getPathToFixture('expectedStylish'));
-        $this->assertEquals($expected, $actual);
+        $this->assertFileExists($fixture1);
+        $this->assertFileExists($fixture2);
+        $this->assertFileExists($expectedPath);
 
-        $fixture1 = $this->getPathToFixture('file1.json');
-        $fixture2 = $this->getPathToFixture('file2.json');
-        $actual = genDiff($fixture1, $fixture2, 'plain');
-        $expected = file_get_contents($this->getPathToFixture('expectedPlain'));
-        $this->assertEquals($expected, $actual);
+        $expected = file_get_contents($expectedPath);
+        $actual = genDiff($fixture1, $fixture2, $format);
 
-        $fixture1 = $this->getPathToFixture('file1.yml');
-        $fixture2 = $this->getPathToFixture('file2.yaml');
-        $actual = genDiff($fixture1, $fixture2, 'plain');
-        $expected = file_get_contents($this->getPathToFixture('expectedPlain'));
-        $this->assertEquals($expected, $actual);
-
-        $fixture1 = $this->getPathToFixture('file1.json');
-        $fixture2 = $this->getPathToFixture('file2.json');
-        $actual = genDiff($fixture1, $fixture2, 'json');
-        $expected = file_get_contents($this->getPathToFixture('expectedJson'));
-        $this->assertEquals($expected, $actual);
-
-        $fixture1 = $this->getPathToFixture('file1.yml');
-        $fixture2 = $this->getPathToFixture('file2.yaml');
-        $actual = genDiff($fixture1, $fixture2, 'json');
-        $expected = file_get_contents($this->getPathToFixture('expectedJson'));
         $this->assertEquals($expected, $actual);
     }
 
-    private function getPathToFixture($fixtureName)
+    public static function diffDataProvider(): array
     {
-        return __DIR__ . "/fixtures/" . $fixtureName;
+        return [
+            'JSON stylish format' => [
+                'file1.json',
+                'file2.json',
+                'stylish',
+                'expectedStylish'
+            ],
+            'YAML stylish format' => [
+                'file1.yml',
+                'file2.yaml',
+                'stylish',
+                'expectedStylish'
+            ],
+            'JSON plain format' => [
+                'file1.json',
+                'file2.json',
+                'plain',
+                'expectedPlain'
+            ],
+            'YAML plain format' => [
+                'file1.yml',
+                'file2.yaml',
+                'plain',
+                'expectedPlain'
+            ],
+            'JSON json format' => [
+                'file1.json',
+                'file2.json',
+                'json',
+                'expectedJson'
+            ],
+            'YAML json format' => [
+                'file1.yml',
+                'file2.yaml',
+                'json',
+                'expectedJson'
+            ]
+        ];
+    }
+
+    private function getFixturePath(string $filename): string
+    {
+        return __DIR__ . '/fixtures/' . $filename;
     }
 }
